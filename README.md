@@ -19,4 +19,9 @@ Tests are implemented using `pytest` and can be run with `pytest` command.
 The base image used has recent (01/2026) vulnerabilities, but does not affect our use case. Alpine flavor
  is chosen to minimize the image size.
 
+IMPORTANT: image reduce user privileges for security reasons to `nobody` user. If you find a permission error
+ when trying to write files or access some resources, this is probably the reason. Configure it properly
+ but does not remove that to run as root. A container running as root could lead to security issues also outside
+ the container.
+
 ## Demo Extra Notes
