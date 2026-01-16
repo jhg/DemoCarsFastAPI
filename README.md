@@ -10,7 +10,8 @@ It is ready to be executed from PyCharm running `DemoCarsFastAPI`, from command 
 ### Testing
 
 Additional dependencies for testing are in `requirements-dev.txt` to be installed in your development
- environment, but not in production and docker image.
+ environment, but not in production and docker image. It requires yet dependencies in `requirements.txt` to
+ be installed.
 
 Tests are implemented using `pytest` and can be run with `pytest` command.
 
