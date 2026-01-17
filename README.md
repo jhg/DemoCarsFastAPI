@@ -7,6 +7,14 @@ A `requirements.txt` is available for setting up dependencies in your venv.
 It is ready to be executed from PyCharm running `DemoCarsFastAPI`, from command line as `fastapi dev` and
  it's possible to try the dockerization that will be used in production with `docker-compose up` also.
 
+### Helpers
+
+There is a `manage.py` script to help to add cars, to have data for development to try features.
+
+```bash
+./manage.py add <car_id> <car_model> <car_seats>
+```
+
 ### Testing
 
 Additional dependencies for testing are in `requirements-dev.txt` to be installed in your development

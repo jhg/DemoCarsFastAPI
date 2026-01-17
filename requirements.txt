@@ -1,1 +1,6 @@
+filelock==3.20.3
+pydantic==2.12.5
+pydantic-extra-types==2.11.0
+pydantic-settings==2.12.0
+pydantic_core==2.41.5
 fastapi[standard]==0.128.0
