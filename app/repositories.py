@@ -6,6 +6,11 @@ from filelock import FileLock
 from app.config import settings
 from app.models import Car, CarBooking
 
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 class BaseRepository:
     """
@@ -13,19 +18,28 @@ class BaseRepository:
     """
 
     def add_car(self, car: Car):
+        logger.error("add_car method not implemented.")
         raise NotImplementedError("Subclasses must implement this method")
 
     def is_car_available(self, car_id: str, start_date: date, end_date: date) -> bool:
+        logger.error("is_car_available method not implemented.")
+        raise NotImplementedError("Subclasses must implement this method")
+
+    def exists_car(self, car_id: str) -> bool:
+        logger.error("exists_car method not implemented.")
         raise NotImplementedError("Subclasses must implement this method")
 
     def get_cars(self, start_date: date, end_date: date):
+        logger.error("get_cars method not implemented.")
         raise NotImplementedError("Subclasses must implement this method")
 
     def book_car(self, booking: CarBooking):
+        logger.error("book_car method not implemented.")
         raise NotImplementedError("Subclasses must implement this method")
 
     @classmethod
     def repo(cls) -> BaseRepository:
+        logger.info("Creating FileSystemRepository instance.")
         return FileSystemRepository(base_path=settings.data_directory)
 
 
@@ -58,6 +72,7 @@ class FileSystemRepository(BaseRepository):
             info_file = os.path.join(self.base_path, "cars", car.id, "info.json")
             with open(info_file, "w") as f:
                 f.write(car.model_dump_json())
+                logger.info(f"Car {car.id} added with info: {car.model_dump_json()}")
 
     def is_car_available(self, car_id: str, start_date: date, end_date: date) -> bool:
         car_dir = os.path.join(self.base_path, "cars", car_id)
@@ -74,11 +89,16 @@ class FileSystemRepository(BaseRepository):
         # but for that the simplest way is to use a database instead of this.
         return True
 
+    def exists_car(self, car_id: str) -> bool:
+        car_dir = os.path.join(self.base_path, "cars", car_id)
+        return os.path.isdir(car_dir)
+
     def get_cars(self, start_date: date, end_date: date):
         cars_path = os.path.join(self.base_path, "cars")
         for car_id in os.listdir(cars_path):
             car_dir = os.path.join(cars_path, car_id)
             if not os.path.isdir(car_dir):
+                logger.warning(f"Car {car_id} is a file instead of a directory, skipping.")
                 continue
             info_file = os.path.join(car_dir, "info.json")
             with open(info_file, "r") as f:
@@ -89,6 +109,7 @@ class FileSystemRepository(BaseRepository):
     def book_car(self, booking: CarBooking):
         with FileLock(self._car_lock_path(booking.car_id)):
             if not self.is_car_available(booking.car_id, booking.start_date, booking.end_date):
+                logger.error(f"Car {booking.car_id} is not available for booking from {booking.start_date} to {booking.end_date}.")
                 raise Exception("Car is not available for the selected dates")
 
             car_dir = os.path.join(self.base_path, "cars", booking.car_id)
@@ -98,3 +119,4 @@ class FileSystemRepository(BaseRepository):
             booking_file = os.path.join(bookings_dir, f"{booking.id}.json")
             with open(booking_file, "w") as f:
                 f.write(booking.model_dump_json())
+                logger.info(f"Booking {booking.id} created for car {booking.car_id} from {booking.start_date} to {booking.end_date}.")

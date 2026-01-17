@@ -1,7 +1,10 @@
 import os
 from functools import lru_cache
-
 from pydantic_settings import BaseSettings
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Settings(BaseSettings):
@@ -13,6 +16,7 @@ def get_settings() -> Settings:
     data_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
     if os.path.exists(data_directory):
         os.environ.setdefault("DATA_DIRECTORY", data_directory)
+    logger.info('Settings loaded')
     return Settings()
 
 
