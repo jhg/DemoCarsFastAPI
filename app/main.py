@@ -12,6 +12,12 @@ from .repositories import BaseRepository
 
 import logging
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
@@ -37,7 +43,7 @@ async def availability(start_date: Annotated[date, Query()], end_date: Annotated
 async def book(car_id: str, start_date: Annotated[date, Query()], end_date: Annotated[date, Query()], response: Response):
     if not BaseRepository.repo().exists_car(car_id):
         response.status_code = 404
-        logger.warning(f"Booking failed: Car {car_id} does not exist.")
+        logger.warning(f"Booking failed, car {car_id} does not exist.")
         return { "error": "Car does not exist." }
 
     if not BaseRepository.repo().is_car_available(car_id, start_date, end_date):
