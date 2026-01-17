@@ -33,4 +33,6 @@ IMPORTANT: image reduce user privileges for security reasons to `nobody` user. I
  but does not remove that to run as root. A container running as root could lead to security issues also outside
  the container.
 
-## Demo Extra Notes
+## Logging
+
+Logging output is fastapi default, in production kubernetes can redirect its output logs to a central logging system.
